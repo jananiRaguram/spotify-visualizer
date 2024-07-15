@@ -1,16 +1,20 @@
 const express = require('express')
 const request = require('request');
+const axios = require('axios');
 const dotenv = require('dotenv');
 
 const port = 5000
 
-global.access_token = ''
+let global_access_token = null;
+
+function updateAccessToken(token){
+  global_access_token = token.access_token;
+}
 
 dotenv.config()
 
 var spotify_client_id = process.env.SPOTIFY_CLIENT_ID
 var spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET
-
 var spotify_redirect_uri = 'http://localhost:3000/auth/callback'
 
 var generateRandomString = function (length) {
@@ -41,36 +45,59 @@ app.get('/auth/login', (req, res) => {
   res.redirect('https://accounts.spotify.com/authorize/?' + auth_query_parameters.toString());
 })
 
-app.get('/auth/callback', (req, res) => {
+app.get('/auth/callback', async (req, res) => {
 
-  var code = req.query.code;
+  const code = req.query.code;
 
-  var authOptions = {
+  const authOptions = {
+    method: 'post',
     url: 'https://accounts.spotify.com/api/token',
-    form: {
-      code: code,
-      redirect_uri: spotify_redirect_uri,
-      grant_type: 'authorization_code'
-    },
     headers: {
       'Authorization': 'Basic ' + (Buffer.from(spotify_client_id + ':' + spotify_client_secret).toString('base64')),
       'Content-Type' : 'application/x-www-form-urlencoded'
     },
-    json: true
+    data: new URLSearchParams({
+      code: code,
+      redirect_uri: spotify_redirect_uri,
+      grant_type: 'authorization_code'
+    }),
   };
 
-  request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      access_token = body.access_token;
-      res.redirect('/')
-    }
-  });
-
-})
+  try{
+    const response = await axios(authOptions);
+    updateAccessToken(response.data);
+    res.redirect('/');
+  }catch(err){
+    console.error('error fetching token', err);
+    res.status(500).send('auth error');
+  }
+});
 
 app.get('/auth/token', (req, res) => {
-  res.json({ access_token: access_token})
+  // console.log(global_access_token);
+  res.json({ access_token: global_access_token})
 })
+
+app.get('/auth/profile', async (req, res) => {
+
+  try {
+    console.log(global_access_token);
+
+    const response = await axios.get('https://api.spotify.com/v1/me',{
+      headers:{
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${global_access_token}`
+      }
+    });
+    const profile = response.data;
+    console.log(profile);
+    
+    res.json(profile);
+  } catch (err) {
+    console.error('error fetching profile', err);
+    res.status(500).send('error fetching profile');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)

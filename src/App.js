@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import WebPlayback from './WebPlayback'
 import Login from './Login'
+import Profile from './Profile';
 import './App.css';
+
 
 function App() {
 
@@ -9,19 +11,27 @@ function App() {
 
   useEffect(() => {
 
-    async function getToken() {
-      const response = await fetch('/auth/token');
-      const json = await response.json();
-      setToken(json.access_token);
+    async function fetchData() {
+      
+      try{
+        const response = await fetch('/auth/token');
+        const json = await response.json();
+        setToken(json.access_token);
+
+      
+      }catch(err){
+        console.error('Error fetching', err);
+      }
     }
 
-    getToken();
+    fetchData();
 
   }, []);
 
   return (
     <>
-        { (token === '') ? <Login/> : <WebPlayback token={token} /> }
+      {!token ? <Login></Login> : <Profile></Profile>}
+
     </>
   );
 }
