@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import SpotifyTop from './SpotifyTop';
 
 function Profile(){
     const [profile, setProfile] = useState(null);

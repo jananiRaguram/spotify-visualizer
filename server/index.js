@@ -31,7 +31,7 @@ var app = express();
 
 app.get('/auth/login', (req, res) => {
 
-  var scope = "streaming user-read-email user-read-private"
+  var scope = "streaming user-read-email user-read-private user-top-read"
   var state = generateRandomString(16);
 
   var auth_query_parameters = new URLSearchParams({
@@ -81,7 +81,7 @@ app.get('/auth/token', (req, res) => {
 app.get('/auth/profile', async (req, res) => {
 
   try {
-    console.log(global_access_token);
+    // console.log(global_access_token);
 
     const response = await axios.get('https://api.spotify.com/v1/me',{
       headers:{
@@ -90,7 +90,7 @@ app.get('/auth/profile', async (req, res) => {
       }
     });
     const profile = response.data;
-    console.log(profile);
+    // console.log(profile);
     
     res.json(profile);
   } catch (err) {
@@ -99,6 +99,37 @@ app.get('/auth/profile', async (req, res) => {
   }
 });
 
+app.get('/auth/top_list', async (req, res) => {
+  const search_type = req.query.type;
+  const time_range = req.query.time_range;
+  const limit = 50;
+  // console.log(search_type);
+  // console.log(time_range);
+
+  //offset limit to be changed if they want more
+  //const offset = 
+
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/me/top/${search_type}?time_range=${time_range}&limit=${limit}`,{
+      headers:{
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${global_access_token}`
+      }
+    });
+    const topData = response.data;
+
+    //format data for d3
+    res.json(topData);
+  }catch(err){
+    console.error('error fetching top list', err);
+    res.status(500).send('error fetching top list');
+  }
+});
+
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
 })
+
+function formatToNetwork(){
+  
+}

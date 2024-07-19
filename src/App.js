@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import WebPlayback from './WebPlayback'
 import Login from './Login'
 import Profile from './Profile';
+import SpotifyTop from './SpotifyTop';
 import './App.css';
+import { Container} from 'react-bootstrap';
+
 
 
 function App() {
@@ -30,8 +32,10 @@ function App() {
 
   return (
     <>
-      {!token ? <Login></Login> : <Profile></Profile>}
-
+      <Container>
+        {!token ? <Login></Login> :             <SpotifyTop></SpotifyTop>
+        }
+      </Container>
     </>
   );
 }
