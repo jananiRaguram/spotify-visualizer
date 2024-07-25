@@ -32,10 +32,9 @@ function App() {
 
   return (
     <>
-      <Container>
-        {!token ? <Login></Login> : <SpotifyTop></SpotifyTop>
-        }
-      </Container>
+      {/* <Container> */}
+        {!token ? <Login/> : <SpotifyTop/>}
+      {/* </Container> */}
     </>
   );
 }

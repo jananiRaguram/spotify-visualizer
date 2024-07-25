@@ -1,6 +1,7 @@
 import { every } from 'd3';
 import React, {useState, useEffect} from 'react';
-import { Form, Button, Row } from 'react-bootstrap';
+import { Form, Button, Row, Col, Container } from 'react-bootstrap';
+import NetworkGraph from './NetworkGraph';
 
 
 function SpotifyTop(){
@@ -38,45 +39,51 @@ function SpotifyTop(){
 
     console.log(topType);
     console.log(timeRange);
-    console.log(topList);
+    // console.log(topList);
 
     return(
         <>
-          <Form onSubmit={handleSubmit}>
-            <Row>
-            <Form.Group>
-                <Form.Label>
-                    Search By
-                </Form.Label>
-                <Form.Select value={topType} onChange={handleTypeChange}>
-                    <option value="artists">
-                        Artists
-                    </option>
-                    <option value="tracks">
-                        Tracks
-                    </option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group>
-                <Form.Label>
-                    Time Range
-                </Form.Label>
-                <Form.Select value={timeRange} onChange={handleTimeRange}>
-                    <option value={"short_term"}>
-                        3 months
-                    </option>
-                    <option value={"medium_term"}>
-                        6 months
-                    </option>
-                    <option value={"long_term"}>
-                        1 year
-                    </option>
-                </Form.Select>
-            </Form.Group>
-            <Button type='submit' >Submit</Button>
-            </Row>
+        <Row>
+            <Col>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Label>
+                            Search By
+                        </Form.Label>
+                        <Form.Select value={topType} onChange={handleTypeChange}>
+                            <option value="artists">
+                                Artists
+                            </option>
+                            <option value="tracks">
+                                Tracks
+                            </option>
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>
+                            Time Range
+                        </Form.Label>
+                        <Form.Select value={timeRange} onChange={handleTimeRange}>
+                            <option value={"short_term"}>
+                                3 months
+                            </option>
+                            <option value={"medium_term"}>
+                                6 months
+                            </option>
+                            <option value={"long_term"}>
+                                1 year
+                            </option>
+                        </Form.Select>
+                    </Form.Group>
+                    <Button type='submit' >Submit</Button>
+                </Form>
+            </Col>
+            <Col>
+                {topList && <NetworkGraph data={topList}/>}
+            </Col>
 
-          </Form>
+        </Row>
+
         </>
     );
 }

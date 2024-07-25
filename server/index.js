@@ -118,7 +118,6 @@ app.get('/auth/top_list', async (req, res) => {
       }
     });
     const topData = response.data;
-    console.log(topData.json);
     const networkData = formatToNetworkData(topData, searchType);
     //format data for d3
     res.json(networkData);
