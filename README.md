@@ -13,7 +13,3 @@ npm run dev
 
 The React application will start on `http://localhost:3000`
 
-## Resources
-
-- Follow [@SpotifyPlatform](https://twitter.com/SpotifyPlatform) on Twitter for Spotify for Developers updates.
-- Join the [Spotify for Developers Community Forum](https://community.spotify.com/t5/Spotify-for-Developers/bd-p/Spotify_Developer).
